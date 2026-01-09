@@ -13,9 +13,9 @@ public class DatabaseConnection {
     public static Connection getConnection() {
 
         if(connection == null) {
-            String url = "jdbc:postgresql://localhost:5432/JavaRPG_Final";
-            String username = "bastienvitour";
-            String password = "";
+            String url = "jdbc:postgresql://host:port/database";
+            String username = "username";
+            String password = "password";
 
             try {
 
