@@ -1,49 +1,40 @@
-import main.java.rpg.core.Character;
-import main.java.rpg.core.CharacterClass;
-import main.java.rpg.dao.CharacterDAO;
-import main.java.rpg.decorators.FireBall;
-import main.java.rpg.decorators.Invisibility;
-import main.java.rpg.decorators.Shield;
-import main.java.rpg.settings.DatabaseConnection;
-
-import java.sql.Connection;
+import main.java.rpg.console.Console;
 
 void main() {
 
-    Connection connection = DatabaseConnection.getConnection();
+    Scanner scanner = new Scanner(System.in);
 
-    CharacterDAO dao = new CharacterDAO(connection);
+    boolean mainMenu = true;
+    while (mainMenu) {
+        System.out.println("Menu");
+        System.out.println("1 - Gérer les personnages");
+        System.out.println("2 - Gérer les guildes");
+        System.out.println("3 - Gérer les armées");
+        System.out.println("0 - Quitter");
 
-    CharacterClass character1 = new CharacterClass.CharacterBuilder("Basvit")
-            .setStrength(0)
-            .setAgility(15)
-            .setIntelligence(30)
-            .build();
+        String choice = scanner.nextLine();
+        int intChoice = 0;
+        try {
+            intChoice = Integer.parseInt(choice);
+        }
+        catch (NumberFormatException ex) {
+            continue;
+        }
 
-    Character fire = new FireBall(character1);
-
-    //fire.getDescription();
-
-    //dao.save(character1);
-
-    CharacterClass character2 = new CharacterClass.CharacterBuilder("Adam")
-            .setStrength(20)
-            .setAgility(5)
-            .setIntelligence(5)
-            .build();
-
-    Character untouchable = new Invisibility(new Shield(character2));
-
-    //untouchable.getDescription();
-
-    //dao.save(character2);
-    //dao.update(character2);
-    CharacterClass character = dao.findByName("Adam");
-    character.getDescription();
-
-    List<CharacterClass> allCharacters = dao.findAll();
-    for(CharacterClass c: allCharacters) {
-        c.getDescription();
+        switch (intChoice) {
+            case 1:
+                Console.CharacterMenu(scanner);
+                break;
+            case 2:
+                Console.GuildMenu(scanner);
+                break;
+            case 3:
+                Console.ArmyMenu(scanner);
+                break;
+            default:
+                mainMenu = false;
+                break;
+        }
     }
 
 }
