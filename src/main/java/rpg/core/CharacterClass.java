@@ -6,12 +6,14 @@ public class CharacterClass implements Character {
     private int strength;
     private int agility;
     private int intelligence;
+    private int healthPoints;
 
     public CharacterClass(CharacterBuilder characterBuilder) {
         this.name = characterBuilder.name;
         this.strength = characterBuilder.strength;
         this.agility = characterBuilder.agility;
         this.intelligence = characterBuilder.intelligence;
+        this.healthPoints = characterBuilder.healthPoints;
     }
 
     public String getName() {
@@ -46,14 +48,17 @@ public class CharacterClass implements Character {
         this.intelligence = intelligence;
     }
 
+    public int getHealthPoints() {
+        return healthPoints;
+    }
+
+    public void setHealthPoints(int healthPoints) {
+        this.healthPoints = healthPoints;
+    }
+
     @Override
     public void getDescription() {
-        System.out.println("Personnage " + this.name);
-        System.out.println("Stats:");
-        System.out.println("- Force : " + this.strength);
-        System.out.println("- Agilité : " + this.agility);
-        System.out.println("- Intelligence : " + this.intelligence);
-        System.out.println("Puissance totale : " + this.getPowerLevel());
+        System.out.println(this.name + "(STR: " + this.strength + ", AGI: " + this.agility + ", INT: " + this.intelligence + ") Total: " + this.getPowerLevel());
     }
 
     public int getPowerLevel() {
@@ -65,6 +70,7 @@ public class CharacterClass implements Character {
         private int strength;
         private int agility;
         private int intelligence;
+        private int healthPoints;
 
         public CharacterBuilder(String name) {
             this.name = name;
@@ -82,6 +88,11 @@ public class CharacterClass implements Character {
 
         public CharacterBuilder setIntelligence(int intelligence) {
             this.intelligence = intelligence;
+            return this;
+        }
+
+        public CharacterBuilder setHealth(int healthPoints) {
+            this.healthPoints = healthPoints;
             return this;
         }
 

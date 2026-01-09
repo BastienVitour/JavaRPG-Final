@@ -19,12 +19,13 @@ public class CharacterDAO implements DAO<CharacterClass> {
 
     @Override
     public boolean save(CharacterClass character) {
-        String sql = "INSERT INTO public.character(name, strength, agility, intelligence) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO public.character(name, strength, agility, intelligence, health_points) VALUES (?, ?, ?, ?, ?);";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, character.getName());
             stmt.setInt(2, character.getStrength());
             stmt.setInt(3, character.getAgility());
             stmt.setInt(4, character.getIntelligence());
+            stmt.setInt(5, character.getHealthPoints());
             int rowCreated = stmt.executeUpdate();
             return rowCreated == 1;
         }
@@ -36,11 +37,12 @@ public class CharacterDAO implements DAO<CharacterClass> {
 
     @Override
     public boolean update(CharacterClass character) {
-        String sql = "UPDATE public.character SET strength = ?, agility = ?, intelligence = ? WHERE name = ?;";
+        String sql = "UPDATE public.character SET strength = ?, agility = ?, intelligence = ?, health_points = ? WHERE name = ?;";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, character.getStrength());
             stmt.setInt(2, character.getAgility());
             stmt.setInt(3, character.getIntelligence());
+            stmt.setInt(4, character.getHealthPoints());
             stmt.setString(4, character.getName());
             int rowUpdated = stmt.executeUpdate();
             return rowUpdated == 1;
@@ -76,6 +78,7 @@ public class CharacterDAO implements DAO<CharacterClass> {
                         .setStrength(rs.getInt("strength"))
                         .setAgility(rs.getInt("agility"))
                         .setIntelligence(rs.getInt("intelligence"))
+                        .setHealth(rs.getInt("health_points"))
                         .build();
             }
         }
@@ -96,6 +99,7 @@ public class CharacterDAO implements DAO<CharacterClass> {
                         .setStrength(rs.getInt("strength"))
                         .setAgility(rs.getInt("agility"))
                         .setIntelligence(rs.getInt("intelligence"))
+                        .setHealth(rs.getInt("health_points"))
                         .build());
             }
             return characters;
