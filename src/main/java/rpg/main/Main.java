@@ -1,7 +1,4 @@
-import main.java.rpg.console.ArmyConsole;
-import main.java.rpg.console.CharacterConsole;
-import main.java.rpg.console.CombatConsole;
-import main.java.rpg.console.GuildConsole;
+import main.java.rpg.console.*;
 
 void main() {
 
@@ -14,6 +11,7 @@ void main() {
         System.out.println("2 - Gérer les guildes");
         System.out.println("3 - Gérer les armées");
         System.out.println("4 - Combattre");
+        System.out.println("5 - Journal de combat");
         System.out.println("0 - Quitter");
 
         String choice = scanner.nextLine();
@@ -38,6 +36,8 @@ void main() {
             case 4:
                 CombatConsole.CombatMenu(scanner);
                 break;
+            case 5:
+                FightLogConsole.FightLogMenu(scanner);
             default:
                 mainMenu = false;
                 break;

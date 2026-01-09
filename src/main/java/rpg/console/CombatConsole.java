@@ -1,8 +1,12 @@
 package main.java.rpg.console;
 
 import main.java.rpg.controllers.CharacterController;
+import main.java.rpg.controllers.FightLogController;
 import main.java.rpg.core.CharacterClass;
+import main.java.rpg.core.FightLog;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -50,11 +54,27 @@ public class CombatConsole {
         CharacterClass selectedCharacter2 = allCharacters.get(intChoice-1);
         selectedCharacter2.getDescription();
 
+        System.out.println("Que voulez vous faire ?");
+        System.out.println("1 - Jouer");
+        System.out.println("2 - Observer le combat");
+
+        choice = scanner.nextLine();
+        try {
+            intChoice = Integer.parseInt(choice);
+        }
+        catch (NumberFormatException ex) {
+
+        }
+        boolean isObserver = intChoice == 2;
+
         boolean combatRunning = true;
 
         CharacterClass characterTurn = selectedCharacter;
 
         Random rand = new Random();
+
+        String winner = "";
+        StringBuilder actionLog = new StringBuilder();
 
         while (combatRunning) {
             System.out.println(selectedCharacter.getName() + " : " + selectedCharacter.getHealthPoints() + "pv restants");
@@ -64,12 +84,17 @@ public class CombatConsole {
             System.out.println("2 - Défendre");
             System.out.println("3 - Utiliser une capacité");
             System.out.println("4 - Passer son tour");
-            choice = scanner.nextLine();
-            try {
-                intChoice = Integer.parseInt(choice);
+            if(!isObserver) {
+                choice = scanner.nextLine();
+                try {
+                    intChoice = Integer.parseInt(choice);
+                }
+                catch (NumberFormatException ex) {
+                    continue;
+                }
             }
-            catch (NumberFormatException ex) {
-                continue;
+            else {
+                intChoice = 1;
             }
             switch (intChoice) {
                 case 1:
@@ -78,7 +103,9 @@ public class CombatConsole {
                         int selectedCharacter2Hp = selectedCharacter2.getHealthPoints() - damage;
                         System.out.println(selectedCharacter.getName() + " attaque ! " + selectedCharacter2.getName() + " perd " + damage + " points de vie");
                         selectedCharacter2.setHealthPoints(selectedCharacter2Hp);
+                        actionLog.append("1A").append(damage).append("-");
                         if(selectedCharacter2Hp <= 0) {
+                            winner = selectedCharacter.getName();
                             System.out.println(selectedCharacter2.getName() + " n'a plus de points de vie ! " + selectedCharacter.getName() + " remporte le combat !");
                             combatRunning = false;
                         }
@@ -87,7 +114,9 @@ public class CombatConsole {
                         int selectedCharacterHp = selectedCharacter.getHealthPoints() - damage;
                         System.out.println(selectedCharacter2.getName() + " attaque ! " + selectedCharacter.getName() + " perd " + damage + " points de vie");
                         selectedCharacter.setHealthPoints(selectedCharacterHp);
+                        actionLog.append("2A").append(damage).append("-");
                         if(selectedCharacterHp <= 0) {
+                            winner = selectedCharacter2.getName();
                             System.out.println(selectedCharacter.getName() + " n'a plus de points de vie ! " + selectedCharacter2.getName() + " remporte le combat !");
                             combatRunning = false;
                         }
@@ -107,5 +136,16 @@ public class CombatConsole {
                     continue;
             }
         }
+
+        FightLog fightLog = new FightLog.FightLogBuilder()
+                .setCharacter1(selectedCharacter.getName())
+                .setCharacter2(selectedCharacter2.getName())
+                .setTimestamp(Timestamp.valueOf(LocalDateTime.now()))
+                .setWinner(winner)
+                .setActionLog(actionLog.toString())
+                .build();
+
+        FightLogController fightLogController = new FightLogController();
+        fightLogController.save(fightLog);
     }
 }
